@@ -1,15 +1,18 @@
 __author__ = 'Akuukis <akuukis@kalvis.lv'
 __plugins__ = ['beanoneliner']
 
-import sys
+import sys, re
 
 from beancount.core.amount import Amount, mul
 from beancount.core import data
+from beancount.core.position import Cost
 from beancount.core.number import D
+
+RE_COST = re.compile('\{(.*)\}')
 
 def beanoneliner(entries, options_map, config):
   """Parse note oneliners into valid transactions. For example,
-  1999-12-31 note Assets:Cash "Income:Test -16.18 EUR * Description goes here *"""
+  1999-12-31 note Assets:Cash "Income:Test -16.18 EUR * Description goes here *" """
 
   errors = []
 
@@ -17,24 +20,39 @@ def beanoneliner(entries, options_map, config):
 
   for entry in entries:
     if(isinstance(entry, data.Note) and entry.comment[-1:] == "*"):
+      comment = entry.comment
       try:
-        p1 = data.Posting(account=entry.comment.split()[0],
-                  units=Amount.from_string(' '.join(entry.comment.split()[1:3])),
-                  cost=None,  # TODO
+        maybe_cost = RE_COST.findall(comment)
+        if len(maybe_cost) > 0:
+          amount = maybe_cost[0].split()[0]
+          currency = maybe_cost[0].split()[1]
+          # cost = Amount.from_string(maybe_cost[0])
+          cost = Cost(D(amount), currency, None, None)
+          comment = RE_COST.sub('', comment)
+        else:
+          cost = None
+
+        comment_tuple = comment.split()
+
+        # print(type(cost), comment)
+        units = Amount.from_string(' '.join(comment_tuple[1:3]))
+        p1 = data.Posting(account=comment_tuple[0],
+                  units=units,
+                  cost=cost,
                   price=None,  # TODO
                   flag=None,
                   meta=None)
         p2 = data.Posting(account=entry.account,
-                  units=mul(Amount.from_string(' '.join(entry.comment.split()[1:3])), D(-1)),
+                  units=mul(mul(cost, D(-1)), units.number),
                   cost=None,
                   price=None,
                   flag=None,
                   meta=None)
         e = data.Transaction(date=entry.date,
                    meta=entry.meta,
-                   flag=entry.comment.split()[3],
+                   flag=comment_tuple[3],
                    payee=None,  # TODO
-                   narration=' '.join(entry.comment.split()[4:-1]),
+                   narration=' '.join(comment_tuple[4:-1]),
                    tags={'NoteToTx'},
                    links=None,  # TODO
                    postings=[p1, p2])
