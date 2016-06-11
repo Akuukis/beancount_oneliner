@@ -42,11 +42,11 @@ def beanoneliner(entries, options_map, config):
         else:
           price = None
 
-        k = k or Amount(D(-1), units.currency)
         comment_tuple = comment.split()
-
         units = Amount.from_string(' '.join(comment_tuple[1:3]))
-        print(type(cost), cost, type(price), price, type(units), units, k, comment)
+        k = k or Amount(D(-1), units.currency)
+
+        # print(type(cost), cost, type(price), price, type(units), units, k, comment)
         p1 = data.Posting(account=comment_tuple[0],
                   units=units,
                   cost=cost,
@@ -68,7 +68,7 @@ def beanoneliner(entries, options_map, config):
                    links=None,  # TODO
                    postings=[p1, p2])
         new_entries.append(e)
-        print(e)
+        # print(e)
       except:
         print(entry, sys.exc_info())
     else:
