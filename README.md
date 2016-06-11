@@ -41,6 +41,7 @@ YAML-tmLanguage entry of [beancount syntax definition for Sublime Text](https://
   - include: '#account'
   - name: punctuation.separator.beancount
     match: (?<=\s)\"
+  - include: '#cost'
   - include: '#amount'
   - begin: (\*|\!)
     beginCaptures:
@@ -54,4 +55,5 @@ YAML-tmLanguage entry of [beancount syntax definition for Sublime Text](https://
     - name: string.quoted.double.beancount
       match: ([^\"])
   - include: '#illegal'
+
 ```
