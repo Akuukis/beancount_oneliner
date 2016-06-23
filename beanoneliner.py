@@ -9,7 +9,7 @@ from beancount.core.position import Cost
 from beancount.core.number import D
 
 RE_COST = re.compile('\{(.*)\}')
-RE_PRICE = re.compile('\@(.*)\*')
+RE_PRICE = re.compile('\@(.*?)\*')
 
 def beanoneliner(entries, options_map, config):
   """Parse note oneliners into valid transactions. For example,
@@ -36,7 +36,7 @@ def beanoneliner(entries, options_map, config):
 
         maybe_price = RE_PRICE.findall(comment)
         if len(maybe_price) > 0:
-          price = Amount.from_string(maybe_price)
+          price = Amount.from_string(maybe_price[0])
           k = k or mul(price, D(-1))
           comment = RE_PRICE.sub('', comment)
         else:
