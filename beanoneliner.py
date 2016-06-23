@@ -52,21 +52,21 @@ def beanoneliner(entries, options_map, config):
                   cost=cost,
                   price=price,
                   flag=None,
-                  meta=None)
+                  meta={'filename': entry.meta['filename'], 'lineno': entry.meta['lineno']})
         p2 = data.Posting(account=entry.account,
                   units=mul(k, units.number),
                   cost=None,
                   price=None,
                   flag=None,
-                  meta=None)
+                  meta={'filename': entry.meta['filename'], 'lineno': entry.meta['lineno']})
         e = data.Transaction(date=entry.date,
-                   meta=entry.meta,
                    flag=comment_tuple[3],
                    payee=None,  # TODO
                    narration=' '.join(comment_tuple[4:-1]),
                    tags={'NoteToTx'},  # TODO
                    links=None,  # TODO
-                   postings=[p1, p2])
+                   postings=[p1, p2],
+                   meta=entry.meta)
         new_entries.append(e)
         # print(e)
       except:
