@@ -55,7 +55,7 @@ def beanoneliner(entries, options_map, config):
                   meta={'filename': entry.meta['filename'], 'lineno': entry.meta['lineno']})
         p2 = data.Posting(account=entry.account,
                   units=mul(k, units.number),
-                  cost=None,
+                  cost=cost,
                   price=None,
                   flag=None,
                   meta={'filename': entry.meta['filename'], 'lineno': entry.meta['lineno']})
