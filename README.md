@@ -3,13 +3,13 @@
 Two leg simple amount transactions are supported, because they are the bulk of entries. Support for price and cost may come, feel free to contribute.
 
 ```
-1999-12-31 note Assets:Cash "Income:Test -16.18 EUR ! Description goes here *"
+1999-12-31 note Assets:Cash "Income:Test -16.18 EUR ! Description goes here #myTag *"
 ```
 
 will be translated into
 
 ```
-1999-12-31 ! "Description goes here"
+1999-12-31 ! "Description goes here" #myTag
 	Income:Test		-16.18 EUR
 	Assets:Cash
 ```
