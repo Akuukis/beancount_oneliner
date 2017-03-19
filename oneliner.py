@@ -1,5 +1,5 @@
 __author__ = 'Akuukis <akuukis@kalvis.lv'
-__plugins__ = ['beanoneliner']
+__plugins__ = ['oneliner']
 
 import sys, re
 
@@ -12,7 +12,7 @@ RE_COST = re.compile('\{(.*)\}')
 RE_PRICE = re.compile('\@(.*?)\*')
 RE_TAG = re.compile(' \^[^\s]+')
 
-def beanoneliner(entries, options_map, config):
+def oneliner(entries, options_map, config):
   """Parse note oneliners into valid transactions. For example,
   1999-12-31 note Assets:Cash "Income:Test -16.18 EUR * Description goes here *" """
 
