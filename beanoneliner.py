@@ -10,6 +10,7 @@ from beancount.core.number import D
 
 RE_COST = re.compile('\{(.*)\}')
 RE_PRICE = re.compile('\@(.*?)\*')
+RE_TAG = re.compile(' \^[^\s]+')
 
 def beanoneliner(entries, options_map, config):
   """Parse note oneliners into valid transactions. For example,
@@ -43,11 +44,19 @@ def beanoneliner(entries, options_map, config):
           price = None
 
         comment_tuple = comment.split()
+        other_account = comment_tuple[0]
         units = Amount.from_string(' '.join(comment_tuple[1:3]))
+        flag = comment_tuple[3]
+        narration = ' '.join(comment_tuple[4:-1])
+        tags = {'NoteToTx'}
+        for tag in RE_TAG.findall(narration):
+          tags.add( tag[2:] )
+        print(tags)
+
         k = k or Amount(D(-1), units.currency)
 
         # print(type(cost), cost, type(price), price, type(units), units, k, comment)
-        p1 = data.Posting(account=comment_tuple[0],
+        p1 = data.Posting(account=other_account,
                   units=units,
                   cost=cost,
                   price=price,
@@ -60,10 +69,10 @@ def beanoneliner(entries, options_map, config):
                   flag=None,
                   meta={'filename': entry.meta['filename'], 'lineno': entry.meta['lineno']})
         e = data.Transaction(date=entry.date,
-                   flag=comment_tuple[3],
+                   flag=flag,
                    payee=None,  # TODO
-                   narration=' '.join(comment_tuple[4:-1]),
-                   tags={'NoteToTx'},  # TODO
+                   narration=narration,
+                   tags=tags,  # TODO
                    links=None,  # TODO
                    postings=[p1, p2],
                    meta=entry.meta)
