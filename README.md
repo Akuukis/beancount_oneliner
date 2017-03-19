@@ -52,6 +52,7 @@ YAML-tmLanguage entry of [beancount syntax definition for Sublime Text](https://
     patterns:
     - name: constant.character.escape.beancount
       match: \\.
+    - include: '#tag'
     - name: string.quoted.double.beancount
       match: ([^\"])
   - include: '#illegal'
