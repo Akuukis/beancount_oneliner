@@ -16,7 +16,12 @@ will be translated into
 
 # Install
 
-Copy to path used for python. For example, `$HOME/.local/lib/python3.5/site-packages/beanoneliner/beanoneliner.py` would do on Debian. If in doubt, look where `beancount` folder is and copy next to it.
+```
+pip3 install beancount-oneliner --user
+```
+
+Or copy to path used for python. For example, `$HOME/.local/lib/python3.4/site-packages/beancount-oneliner/oneliner.py` would do on Debian. If in doubt, look where `beancount` folder is and copy next to it.
+
 
 # Syntax highlight
 
