@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
       name='beancount-oneliner',
-      version='1.0.0',
+      version='1.0.1',
       description='Oneliner entry plugin for Beancount',
       url='https://github.com/Akuukis/beancount_interpolate',
       author='Kalvis \'Akuukis\' Kalnins',

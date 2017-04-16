@@ -9,8 +9,8 @@ from beancount.core.position import Cost
 from beancount.core.number import D
 
 RE_COST = re.compile('\{(.*)\}')
-RE_PRICE = re.compile('\@(.*?)\*')
-RE_TAG = re.compile('(?<=\s)(#)([A-Za-z0-9\-_/.]+)')
+RE_PRICE = re.compile('\ \@(.*?)\*')
+RE_TAG = re.compile('(?<=\s)(#)([A-Za-z0-9\-_/@.]+)')
 
 def oneliner(entries, options_map, config):
   """Parse note oneliners into valid transactions. For example,
@@ -79,7 +79,7 @@ def oneliner(entries, options_map, config):
         new_entries.append(e)
         # print(e)
       except:
-        print(entry, sys.exc_info())
+        print('beancount-oneliner error:', entry, sys.exc_info())
     else:
       new_entries.append(entry)
 
