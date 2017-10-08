@@ -7,6 +7,7 @@ from beancount.core.amount import Amount, mul
 from beancount.core import data
 from beancount.core.position import Cost
 from beancount.core.number import D
+from beancount.core.data import EMPTY_SET
 
 RE_COST = re.compile('\{(.*)\}')
 RE_PRICE = re.compile('\ \@(.*?)\*')
@@ -73,7 +74,7 @@ def oneliner(entries, options_map, config):
                    payee=None,  # TODO
                    narration=narration,
                    tags=tags,  # TODO
-                   links=None,  # TODO
+                   links=EMPTY_SET,  # TODO
                    postings=[p1, p2],
                    meta=entry.meta)
         new_entries.append(e)
