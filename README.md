@@ -1,3 +1,10 @@
+
+[![PyPI - Version](https://img.shields.io/pypi/v/beancount_oneliner)](https://pypi.org/project/packages/beancount_oneliner/)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/beancount_oneliner)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/beancount_oneliner)
+![PyPI - License](https://img.shields.io/pypi/l/beancount_oneliner)
+
+
 # How to use
 
 Two leg simple amount transactions are supported, because they are the bulk of entries. Support for price and cost may come, feel free to contribute.
@@ -13,6 +20,7 @@ will be translated into
 	Income:Test		-16.18 EUR
 	Assets:Cash
 ```
+
 
 # Install
 
