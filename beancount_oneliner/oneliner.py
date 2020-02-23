@@ -80,7 +80,7 @@ def oneliner(entries, options_map, config):
         new_entries.append(e)
         # print(e)
       except:
-        print('beancount-oneliner error:', entry, sys.exc_info())
+        print('beancount_oneliner error:', entry, sys.exc_info())
     else:
       new_entries.append(entry)
 

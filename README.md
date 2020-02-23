@@ -17,10 +17,10 @@ will be translated into
 # Install
 
 ```
-pip3 install beancount-oneliner --user
+pip3 install beancount_oneliner --user
 ```
 
-Or copy to path used for python. For example, `$HOME/.local/lib/python3.4/site-packages/beancount-oneliner/oneliner.py` would do on Debian. If in doubt, look where `beancount` folder is and copy next to it.
+Or copy to path used for python. For example, `$HOME/.local/lib/python3.4/site-packages/beancount_oneliner/oneliner.py` would do on Debian. If in doubt, look where `beancount` folder is and copy next to it.
 
 
 # Syntax highlight
