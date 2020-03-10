@@ -69,5 +69,52 @@ YAML-tmLanguage entry of [beancount syntax definition for Sublime Text](https://
     - name: string.quoted.double.beancount
       match: ([^\"])
   - include: '#illegal'
+```
 
+YAML-tmLanguage entry for [VSCode Beancount Extension](https://github.com/Lencerf/vscode-beancount)
+
+```yaml
+    -
+        name: meta.directive.notetotext.beancount
+        comment: 'Note as Oneliner Transaction directive'
+        begin: '([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s+(note)(?=(.*\*\"\s))'
+        beginCaptures:
+            '1':
+                name: constant.numeric.date.year.beancount
+            '2':
+                name: punctuation.separator.beancount
+            '3':
+                name: constant.numeric.date.month.beancount
+            '4':
+                name: punctuation.separator.beancount
+            '5':
+                name: constant.numeric.date.day.beancount
+            '6':
+                name: support.function.directive.beancount
+        end: '(?=(^\s*$|^\S))'
+        patterns:
+            -
+                include: '#meta'
+            -
+                include: '#account'
+            -
+                name: punctuation.separator.beancount
+                match: '(?<=\s)\"'
+            -
+                include: '#cost'
+            -
+                include: '#amount'
+            -
+                begin: '(\*|\!)'
+                beginCaptures:
+                    '0': {name: support.function.directive.beancount}
+                end: '(\*\")'
+                endCaptures:
+                    '0': {name: punctuation.separator.beancount}
+                patterns:
+                    - {name: constant.character.escape.beancount, match: \\.}
+                    - {include: '#tag'}
+                    - {name: string.quoted.double.beancount, match: '([^\"])'}
+            -
+                include: '#illegal'
 ```
