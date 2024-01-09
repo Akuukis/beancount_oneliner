@@ -10,7 +10,11 @@ from beancount.core.amount import Amount, mul
 from beancount.core import data
 from beancount.core.position import Cost
 from beancount.core.number import D
-from beancount.core.data import EMPTY_SET
+from beancount.core.number import ONE
+from beancount.core.number import ZERO
+from beancount.core.data import EMPTY_SET, new_metadata
+from beancount.core import interpolate
+from beancount.utils import defdict
 
 RE_COST = re.compile(r"\{(.*)\}")
 RE_PRICE = re.compile(r"\ \@(.*?)\*")
@@ -102,6 +106,17 @@ def oneliner(entries, options_map, config):
                     postings=[p1, p2],
                     meta=entry.meta,
                 )
+
+                # Get the AUTOMATIC_TOLERANCES meta that all transaction should have.
+                # This is a simplified extraction from `infer_tolerances` function within beancount.
+                tolerances = options_map["inferred_tolerance_default"].copy()
+                expo = units.number.as_tuple().exponent
+                tolerances[units.currency] = ONE.scaleb(expo) * options_map["inferred_tolerance_multiplier"]
+                default = tolerances.pop("*", ZERO)
+                meta = e.meta.copy()
+                meta[interpolate.AUTOMATIC_TOLERANCES] = defdict.ImmutableDictWithDefault(tolerances, default=default)
+                e = e._replace(meta=meta)
+
                 new_entries.append(e)
                 # print(e)
             # I'm not sure what else to except.
