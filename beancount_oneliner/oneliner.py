@@ -5,6 +5,7 @@ __plugins__ = ["oneliner"]
 import sys
 import re
 
+from collections import namedtuple
 from beancount.core.amount import Amount, mul
 from beancount.core import data
 from beancount.core.position import Cost
@@ -14,6 +15,9 @@ from beancount.core.data import EMPTY_SET
 RE_COST = re.compile(r"\{(.*)\}")
 RE_PRICE = re.compile(r"\ \@(.*?)\*")
 RE_TAG = re.compile(r"(?<=\s)(#)([A-Za-z0-9\-_/@.]+)")
+
+
+PluginOnelinerParseError = namedtuple("LoadError", "source message entry")
 
 
 # Good to remember that beancount passes these parameters to all plugins.
@@ -102,8 +106,17 @@ def oneliner(entries, options_map, config):
                 # print(e)
             # I'm not sure what else to except.
             # pylint: disable=broad-exception-caught
-            except Exception:
+            except Exception as e:
                 print("beancount_oneliner error:", entry, sys.exc_info())
+                errors.append(
+                    PluginOnelinerParseError(
+                        new_metadata(entry.meta["filename"], entry.meta["lineno"]),
+                        "PluginOneliner: " + str(e),
+                        entry,
+                    )
+                )
+                new_entries.append(entry)
+                continue
         else:
             new_entries.append(entry)
 
