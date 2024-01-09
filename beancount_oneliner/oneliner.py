@@ -60,6 +60,7 @@ def oneliner(entries, options_map, config):
                 tags = {"NoteToTx"}
                 for tag in RE_TAG.findall(narration_tmp):
                     tags.add(tag[1])
+                tags = frozenset(tags)
                 narration = RE_TAG.sub("", narration_tmp).rstrip()
 
                 k = k or Amount(D(-1), units.currency)
