@@ -19,6 +19,7 @@ from beancount.utils import defdict
 RE_COST = re.compile(r"\{(.*)\}")
 RE_PRICE = re.compile(r"\ \@(.*?)\*")
 RE_TAG = re.compile(r"(?<=\s)(#)([A-Za-z0-9\-_/@.]+)")
+RE_PAYEE = re.compile(r"(.*?)\|")
 
 
 PluginOnelinerParseError = namedtuple("LoadError", "source message entry")
@@ -50,6 +51,14 @@ def extract_optional_price(comment: str):
     return comment, price
 
 
+def extract_payee(narration: str):
+    """Split full narration into payee and clean narration."""
+    payee = RE_PAYEE.match(narration)
+    if payee:
+        return payee[0].strip("|").strip(), RE_PAYEE.sub("", narration, 1).strip()
+    return None, narration.strip()
+
+
 def extract_rest(comment: str):
     """Extract other_account, units, flag, tags, narration from comment."""
     comment_tuple = comment.split()
@@ -62,8 +71,9 @@ def extract_rest(comment: str):
         tags.add(tag[1])
     tags = frozenset(tags)
     narration = RE_TAG.sub("", narration_tmp).rstrip()
+    payee, narration_clean = extract_payee(narration)
 
-    return other_account, units, flag, tags, narration
+    return other_account, units, flag, tags, payee, narration_clean
 
 
 def handle_entry(entry: data.Note, options_map):
@@ -82,7 +92,7 @@ def handle_entry(entry: data.Note, options_map):
     if price:
         k = k or mul(price, D(-1))
 
-    other_account, units, flag, tags, narration = extract_rest(comment)
+    other_account, units, flag, tags, payee, narration = extract_rest(comment)
     k = k or Amount(D(-1), units.currency)
 
     # print(type(cost), cost, type(price), price, type(units), units, k, comment)
@@ -105,7 +115,7 @@ def handle_entry(entry: data.Note, options_map):
     txn = data.Transaction(
         date=entry.date,
         flag=flag,
-        payee=None,  # TODO
+        payee=payee,
         narration=narration,
         tags=tags,  # TODO
         links=EMPTY_SET,  # TODO
