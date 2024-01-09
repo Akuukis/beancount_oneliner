@@ -5,9 +5,9 @@
             "eamodio.gitlens",
             "editorconfig.editorconfig",
             "jasonnutter.vscode-codeowners",
+            "ms-python.pylint",
             "ms-python.python",
             "shardulm94.trailing-spaces",
-            "tyriar.sort-lines",
             "yzhang.markdown-all-in-one"
         ]
     },
@@ -26,24 +26,36 @@
         }
     ],
     "settings": {
+        "coverage-gutters.showLineCoverage": true,
+        "coverage-gutters.showRulerCoverage": true,
+        "coverage-gutters.showGutterCoverage": false,
         "cucumberautocomplete.steps": [
-            "test/*.py"
+            "tests/conftest.py"
         ],
-        "cucumberautocomplete.syncfeatures": "test/*.feature",
+        "cucumberautocomplete.syncfeatures": "tests/*.feature",
         "cucumberautocomplete.strictGherkinCompletion": true,
         "cucumberautocomplete.strictGherkinValidation": true,
         "cucumberautocomplete.smartSnippets": true,
         "cucumberautocomplete.stepsInvariants": true,
         "cucumberautocomplete.skipDocStringsFormat": false,
         "cucumberautocomplete.onTypeFormat": true,
+        "cucumberautocomplete.gherkinDefinitionPart": "@(given|when|then|step)\\(parsers.parse\\(",
+        "cucumberautocomplete.customParameters": [
+            {
+                "parameter":"{ab}",
+                "value":"(a|b)"
+            },
+            {
+                "parameter":"\\{a.*\\}",
+                "value":"a"
+            },
+        ],
+        // "cucumberautocomplete.gherkinDefinitionPart": "@(given|when|then|step)\\((parsers.parse\\()?",  // TODO
         "editor.quickSuggestions": {
             "comments": true,
             "strings": true,
             "other": true
         },
-        "cucumberautocomplete.gherkinDefinitionPart": "@(given|when|then|step)\\(parsers.parse\\(",
-        // "cucumberautocomplete.gherkinDefinitionPart": "@(given|when|then|step)\\((parsers.parse\\()?",  // TODO
-        "cucumberautocomplete.stepRegExSymbol": "'",
         "files.exclude": {
             "**/.git": true,
             "**/.svn": true,
@@ -56,8 +68,5 @@
             "tests/": true
         },
         "editor.detectIndentation": false,  // Let `.editconfig` decide.
-        "python.linting.pylintEnabled": true,
-        "python.linting.enabled": true,
-        "python.pythonPath": "/usr/bin/python3.7"
     }
 }
