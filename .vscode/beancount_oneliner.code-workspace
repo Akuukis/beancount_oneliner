@@ -5,6 +5,7 @@
             "eamodio.gitlens",
             "editorconfig.editorconfig",
             "jasonnutter.vscode-codeowners",
+            "ms-python.black-formatter",
             "ms-python.pylint",
             "ms-python.python",
             "shardulm94.trailing-spaces",
@@ -68,5 +69,10 @@
             "tests/": true
         },
         "editor.detectIndentation": false,  // Let `.editconfig` decide.
+        "[python]": {
+            "editor.defaultFormatter": "ms-python.black-formatter",
+            "editor.formatOnSave": true,
+        }
+
     }
 }

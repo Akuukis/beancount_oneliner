@@ -1,5 +1,8 @@
-init:
+install:
 	pip3 install -r requirements.txt
+
+lint:
+	black beancount_allocate/
 
 test:
 	pytest
