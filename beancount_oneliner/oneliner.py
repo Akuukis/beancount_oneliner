@@ -19,6 +19,7 @@ from beancount.utils import defdict
 RE_COST = re.compile(r"\{(.*)\}")
 RE_PRICE = re.compile(r"\ \@(.*?)\*")
 RE_TAG = re.compile(r"(?<=\s)(#)([A-Za-z0-9\-_/@.]+)")
+RE_LINK = re.compile(r"(?<=\s)(\^)([A-Za-z0-9\-_/@.]+)")
 RE_PAYEE = re.compile(r"(.*?)\|")
 
 
@@ -62,18 +63,27 @@ def extract_payee(narration: str):
 def extract_rest(comment: str):
     """Extract other_account, units, flag, tags, narration from comment."""
     comment_tuple = comment.split()
+    narration_tmp = " ".join(comment_tuple[4:-1])
+
     other_account = comment_tuple[0]
     units = Amount.from_string(" ".join(comment_tuple[1:3]))
     flag = comment_tuple[3]
-    narration_tmp = " ".join(comment_tuple[4:-1])
+
     tags = {"NoteToTx"}
     for tag in RE_TAG.findall(narration_tmp):
         tags.add(tag[1])
     tags = frozenset(tags)
-    narration = RE_TAG.sub("", narration_tmp).rstrip()
-    payee, narration_clean = extract_payee(narration)
+    narration_tmp = RE_TAG.sub("", narration_tmp).rstrip()
 
-    return other_account, units, flag, tags, payee, narration_clean
+    links = set()
+    for link in RE_LINK.findall(narration_tmp):
+        links.add(link[1])
+    links = frozenset(links)
+    narration_tmp = RE_LINK.sub("", narration_tmp).rstrip()
+
+    payee, narration = extract_payee(narration_tmp)
+
+    return other_account, units, flag, tags, links, payee, narration
 
 
 def handle_entry(entry: data.Note, options_map):
@@ -92,7 +102,7 @@ def handle_entry(entry: data.Note, options_map):
     if price:
         k = k or mul(price, D(-1))
 
-    other_account, units, flag, tags, payee, narration = extract_rest(comment)
+    other_account, units, flag, tags, links, payee, narration = extract_rest(comment)
     k = k or Amount(D(-1), units.currency)
 
     # print(type(cost), cost, type(price), price, type(units), units, k, comment)
@@ -117,8 +127,8 @@ def handle_entry(entry: data.Note, options_map):
         flag=flag,
         payee=payee,
         narration=narration,
-        tags=tags,  # TODO
-        links=EMPTY_SET,  # TODO
+        tags=tags,
+        links=links,
         postings=[p1, p2],
         meta=entry.meta,
     )

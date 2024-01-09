@@ -4,3 +4,4 @@ import conftest
 
 scenarios("features/basics.feature")
 scenarios("features/payee.feature")
+scenarios("features/link.feature")
