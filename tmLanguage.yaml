@@ -1,0 +1,37 @@
+-
+    name: meta.directive.beancount.notetotext
+    comment: 'Note as Oneliner Transaction directive'
+    begin: '([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s+(note)(?=(.*\*\"\s))'
+    beginCaptures:
+        '1': {name: constant.numeric.date.year.beancount}
+        '2': {name: punctuation.separator.beancount}
+        '3': {name: constant.numeric.date.month.beancount}
+        '4': {name: punctuation.separator.beancount}
+        '5': {name: constant.numeric.date.day.beancount}
+        '6': {name: support.function.directive.beancount}
+    end: '(?=(^\s*$|^\S))'
+    patterns:
+        - {include: '#meta'}
+        - {include: '#comments'}
+        - {include: '#account'}
+        -
+            name: meta.directive.arguments.beancount.notetotext
+            match: '(?<=\s)(\")(.*?)(\s+(\*|!)\s+)((.*?)(\s\|\s))?(.*?)(\*\")'
+            captures:
+                '1': {name: punctuation.definition.arguments.begin.beancount.notetotext}
+                '2':
+                    patterns:
+                        - {include: '#account'}
+                        - {include: '#amount'}
+                        - {include: '#cost'}
+                        - {include: '#illegal'}
+                '3': {comment: '*',       name: punctuation.separator.arguments.beancount.notetotext}
+                '6': {comment: '$payee',  name: constant.other.payee.beancount.notetotext}
+                '7': {comment: '|',       name: punctuation.separator.arguments.beancount.notetotext}
+                '8':
+                    name: string.unquoted.beancount.notetotext
+                    patterns:
+                        - {include: '#tag'}
+                        - {include: '#link'}
+                '9': {comment: '*"',      name: punctuation.definition.arguments.end.beancount.notetotext}
+        - {include: '#illegal'}
