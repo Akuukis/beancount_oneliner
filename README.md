@@ -7,22 +7,35 @@
 
 ## How to use
 
-Two leg simple amount transactions are supported, because they are the bulk of entries. Support for price and cost may come, feel free to contribute.
+Fit a simple 2-leg transaction on **one line**.
 
 ```bean
-1999-12-31 note Assets:Cash "Income:Test -16.18 EUR ! Description goes here #myTag *"
+1999-12-31 note Assets:Cash "Expenses:Test 16.18 EUR * A description. *"
 ```
 
-will be translated into
+That will be translated by the plugin to
 
 ```bean
-1999-12-31 ! "Description goes here" #myTag
-	Income:Test		-16.18 EUR
-	Assets:Cash
+1999-12-31 * "A description."
+	Assets:Cash         -16.18 EUR
+	Expenses:Test        16.18 EUR
 ```
+
+It supports payee, exclamation mark, tags, links, meta, cost and price.
+
+Recommended VSCode themes:
+- Ayu
+- Monokai Pro
+- Night Owl
+
+![Alt text](preview_ayu.png)
+![Alt text](preview_monokai_pro.png)
+![Alt text](preview_night_owl.png)
 
 
 ## Install
+
+### Plugin
 
 ```sh
 pip3 install beancount_oneliner --user
@@ -30,13 +43,8 @@ pip3 install beancount_oneliner --user
 
 Or copy to path used for python. For example, `$HOME/.local/lib/python3.4/site-packages/beancount_oneliner/oneliner.py` would do on Debian. If in doubt, look where `beancount` folder is and copy next to it.
 
-Recommended VSCode themes:
-- Ayu
-- Monokai Pro
-- Night Owl
 
-
-## Syntax highlight
+### Syntax highlight
 
 Supported by the following beancount extensions:
 - [beancount syntax definition for Sublime Text](https://github.com/draug3n/sublime-beancount)
@@ -45,7 +53,6 @@ Supported by the following beancount extensions:
 On VSCode, you will need to select the syntax with plugin support (there are two, with and without). To ensure it's selected automatically, add this to VSCode settings:
 ```jsonc
     "files.associations": {
-        "*.extract": "beancount-oneline",
         "*.bean": "beancount-oneline",
         "*.beancount": "beancount-oneline",
     }
