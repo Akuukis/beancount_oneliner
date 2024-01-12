@@ -1,6 +1,6 @@
 
-[![PyPI - Version](https://img.shields.io/pypi/v/beancount_oneliner)](https://pypi.org/project/packages/beancount_oneliner/)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/beancount_oneliner)
+[![PyPI - Version](https://img.shields.io/pypi/v/beancount_oneliner)](https://pypi.org/project/beancount-oneliner/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/beancount_oneliner)](https://pypistats.org/packages/beancount-oneliner)
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/beancount_oneliner)
 ![PyPI - License](https://img.shields.io/pypi/l/beancount_oneliner)
 
