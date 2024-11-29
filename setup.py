@@ -9,7 +9,7 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="beancount_oneliner",
-    version="1.1.1",
+    version="1.2.0",
     description="Plugin for Beancount to write oneliner transaction entries.",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -1,4 +1,5 @@
 """Write your simple transactions on one line."""
+
 __author__ = "Akuukis <akuukis@kalvis.lv"
 __plugins__ = ["oneliner"]
 
@@ -21,6 +22,14 @@ RE_PRICE = re.compile(r"\ \@(.*?)\*")
 RE_TAG = re.compile(r"(?<=\s)(#)([A-Za-z0-9\-_/@.]+)")
 RE_LINK = re.compile(r"(?<=\s)(\^)([A-Za-z0-9\-_/@.]+)")
 RE_PAYEE = re.compile(r"(.*?)\|")
+
+
+def prefixHash(string):
+    return "#" + string
+
+
+def prefixCarrot(string):
+    return "^" + string
 
 
 PluginOnelinerParseError = namedtuple("LoadError", "source message entry")
@@ -86,12 +95,55 @@ def extract_rest(comment: str):
     return other_account, units, flag, tags, links, payee, narration
 
 
-def handle_entry(entry: data.Note, options_map):
+def to_oneliner(tx: data.Transaction, alignDotAt=90, alignAccountAt=50) -> data.Note:
+    """
+    Useful in custom importers to import transactions in oneliner format.
+
+    Usage:
+    ```
+    tx_entry = data.Transaction(...)       # Given a transaction..
+    note_entry = onelinerFromTx(tx_entry)  # Get a matching oneliner note.
+    ```
+
+    Assuming max account name length is 32, to acommodiate 6-digit numbers recommended alignDotAt is 90 (and alignAccountAt is 50).
+    ```
+    2020-01-02 note Assets:Cash                      "Expenses:Random                     123.45 EUR * ShopA | some stuff.. *"
+    2020-01-02 note Assets:BankABC:Checking          "Expenses:Groceries                   43.21 EUR * ShopB | some groceries *"
+    #                          |---------------------^               |-----------------------^
+    #                                      |---------^                  |--------------------^
+    #                                (alignAccountAt = 50)                       (alignDotAt = 90)
+
+    2020-01-02 note Assets:Cash "Expenses:Random                                          123.45 EUR * ShopA | some stuff.. *"
+    2020-01-02 note Assets:BankABC:Checking "Expenses:Groceries                            43.21 EUR * ShopB | some groceries *"
+    #                                           |--------------------------------------------^
+    #                                                          |-----------------------------^
+    #                                (alignAccountAt = 0)                        (alignDotAt = 90)
+    ```
+    """
+
+    tagString = " ".join(list(map(prefixHash, tx.tags)))
+    tagLinks = " ".join(list(map(prefixCarrot, tx.links)))
+
+    commentAccount = tx.postings[1].account
+    commentRest = "{} * {} | {} {} {} *".format(tx.postings[1].units, tx.payee, tx.narration, tagString, tagLinks)
+
+    preDotLen = len(str(tx.postings[1].units).split(".")[0])
+
+    prefixLen = len("____-__-__ note " + tx.postings[0].account + ' "')
+    middleLen = len(tx.postings[1].account + " ") + preDotLen
+    pad = " " * max(1, (alignDotAt - prefixLen - middleLen - (max(0, alignAccountAt - prefixLen))))
+
+    entry = data.Note(tx.meta, tx.date, tx.postings[0].account, commentAccount + pad + commentRest)
+
+    return entry
+
+
+def from_oneliner(note: data.Note, options_map):
     """
     Parse one note oneliner into a valid transactions. For example,
     1999-12-31 note Assets:Cash "Income:Test -16.18 EUR * Payee | Description goes here *"
     """
-    comment = entry.comment
+    comment = note.comment
     k = None
 
     comment, cost = extract_optional_cost(comment)
@@ -112,25 +164,25 @@ def handle_entry(entry: data.Note, options_map):
         cost=cost,
         price=price,
         flag=None,
-        meta={"filename": entry.meta["filename"], "lineno": entry.meta["lineno"]},
+        meta={"filename": note.meta["filename"], "lineno": note.meta["lineno"]},
     )
     p2 = data.Posting(
-        account=entry.account,
+        account=note.account,
         units=mul(k, units.number),
         cost=cost,
         price=None,
         flag=None,
-        meta={"filename": entry.meta["filename"], "lineno": entry.meta["lineno"]},
+        meta={"filename": note.meta["filename"], "lineno": note.meta["lineno"]},
     )
     txn = data.Transaction(
-        date=entry.date,
+        date=note.date,
         flag=flag,
         payee=payee,
         narration=narration,
         tags=tags,
         links=links,
         postings=[p1, p2],
-        meta=entry.meta,
+        meta=note.meta,
     )
 
     # Get the AUTOMATIC_TOLERANCES meta that all transaction should have.
@@ -163,7 +215,7 @@ def oneliner(entries, options_map, config):
             continue
 
         try:
-            new_entry = handle_entry(entry, options_map)
+            new_entry = from_oneliner(entry, options_map)
             new_entries.append(new_entry)
         # I'm not sure what else to except.
         # pylint: disable=broad-exception-caught
