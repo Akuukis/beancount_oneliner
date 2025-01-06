@@ -18,7 +18,7 @@ from beancount.core import interpolate
 from beancount.utils import defdict
 
 RE_COST = re.compile(r"\{(.*)\}")
-RE_PRICE = re.compile(r"\ \@(.*?)\*")
+RE_PRICE = re.compile(r"\ \@\s*?(.*?)(?=\ \*)")
 RE_TAG = re.compile(r"(?<=\s)(#)([A-Za-z0-9\-_/@.]+)")
 RE_LINK = re.compile(r"(?<=\s)(\^)([A-Za-z0-9\-_/@.]+)")
 RE_PAYEE = re.compile(r"(.*?)\|")
