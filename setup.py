@@ -9,7 +9,7 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="beancount_oneliner",
-    version="1.2.1",
+    version="1.3.0",
     description="Plugin for Beancount to write oneliner transaction entries.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -19,6 +19,6 @@ setup(
     package_data={"beancount_oneliner": ["README.md"]},
     package_dir={"beancount_oneliner": "beancount_oneliner"},
     packages=["beancount_oneliner"],
-    requires=["beancount (>2.0)"],
+    requires=["beancount (>=2.0)"],
     url="https://github.com/Akuukis/beancount_oneliner",
 )
