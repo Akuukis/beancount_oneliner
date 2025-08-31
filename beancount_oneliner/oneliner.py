@@ -70,7 +70,7 @@ def extract_payee(narration: str):
 
 
 def extract_rest(comment: str):
-    """Extract other_account, units, flag, tags, narration from comment."""
+    """Extract other_account, units, flag, payee, narration, tags, and links."""
     comment_tuple = comment.split()
     narration_tmp = " ".join(comment_tuple[4:-1])
 
@@ -155,6 +155,8 @@ def from_oneliner(note: data.Note, options_map):
         k = k or mul(price, D(-1))
 
     other_account, units, flag, tags, links, payee, narration = extract_rest(comment)
+    tags_merged = frozenset().union(tags, note.tags)
+    links_merged = frozenset().union(links, note.links)
     k = k or Amount(D(-1), units.currency)
 
     # print(type(cost), cost, type(price), price, type(units), units, k, comment)
@@ -179,8 +181,8 @@ def from_oneliner(note: data.Note, options_map):
         flag=flag,
         payee=payee,
         narration=narration,
-        tags=tags,
-        links=links,
+        tags=tags_merged,
+        links=links_merged,
         postings=[p1, p2],
         meta=note.meta,
     )
