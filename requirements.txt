@@ -1,4 +1,8 @@
 setuptools
-beancount
+beancount >=2, <4
 twine
 wheel
+
+pytest >=7, <8
+pytest_bdd >=7, <8
+beancount_plugin_utils
