@@ -6,3 +6,4 @@ wheel
 pytest >=7, <8
 pytest_bdd >=7, <8
 beancount_plugin_utils
+black

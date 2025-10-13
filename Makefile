@@ -4,7 +4,7 @@ install:
 	printf '\nrun:\n    source .venv/bin/activate\n\n'
 
 lint:
-	black beancount_allocate/
+	black beancount_oneliner/
 
 test:
 	pytest
