@@ -121,11 +121,8 @@ def to_oneliner(tx: data.Transaction, alignDotAt=90, alignAccountAt=50) -> data.
     ```
     """
 
-    tagString = " ".join(list(map(prefixHash, tx.tags)))
-    tagLinks = " ".join(list(map(prefixCarrot, tx.links)))
-
     commentAccount = tx.postings[1].account
-    commentRest = "{} * {} | {} {} {} *".format(tx.postings[1].units, tx.payee, tx.narration, tagString, tagLinks)
+    commentRest = "{} * {} | {} *".format(tx.postings[1].units, tx.payee, tx.narration)
 
     preDotLen = len(str(tx.postings[1].units).split(".")[0])
 
@@ -133,7 +130,14 @@ def to_oneliner(tx: data.Transaction, alignDotAt=90, alignAccountAt=50) -> data.
     middleLen = len(tx.postings[1].account + " ") + preDotLen
     pad = " " * max(1, (alignDotAt - prefixLen - middleLen - (max(0, alignAccountAt - prefixLen))))
 
-    entry = data.Note(tx.meta, tx.date, tx.postings[0].account, commentAccount + pad + commentRest)
+    entry = data.Note(
+        meta=tx.meta,
+        date=tx.date,
+        account=tx.postings[0].account,
+        comment=commentAccount + pad + commentRest,
+        tags=tx.tags,
+        links=tx.links,
+    )
 
     return entry
 
